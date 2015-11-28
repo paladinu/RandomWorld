@@ -7,6 +7,8 @@ var sass = require('gulp-sass');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
+var minifyCss = require('gulp-minify-css');
+var sourcemaps = require('gulp-sourcemaps');
 
 // Lint Task
 gulp.task('lint', function() {
@@ -18,8 +20,19 @@ gulp.task('lint', function() {
 // Compile Our Sass
 gulp.task('sass', function() {
     return gulp.src('public/stylesheets/*.scss')
-        .pipe(sass())
-        .pipe(gulp.dest('css'));
+        .pipe(sourcemaps.init())
+        .pipe(sass({ 
+            style: 'expanded',
+            sourceComments: 'map',
+            includePaths : 'public/stylesheets'
+            }))
+        .pipe(sourcemaps.write())
+        .pipe(gulp.dest('public/stylesheets'))
+        .pipe(concat('all.css'))
+        .pipe(gulp.dest('dist'))
+        .pipe(minifyCss())
+        .pipe(rename('all.min.css'))
+        .pipe(gulp.dest('dist'));
 });
 
 // Concatenate & Minify JS
