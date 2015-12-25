@@ -12,7 +12,8 @@ var sourcemaps = require('gulp-sourcemaps');
 
 // Lint Task
 gulp.task('lint', function() {
-    return gulp.src('public/javascripts/*.js')
+    return gulp.src(['public/javascripts/*.js',
+        'public/javascripts/viewmodels/*.js'])
         .pipe(jshint())
         .pipe(jshint.reporter('default'));
 });
@@ -37,7 +38,8 @@ gulp.task('sass', function() {
 
 // Concatenate & Minify JS
 gulp.task('scripts', function() {
-    return gulp.src('public/javascripts/*.js')
+    return gulp.src(['public/javascripts/*.js',
+        'public/javascripts/viewmodels/*.js'])
         .pipe(concat('all.js'))
         .pipe(gulp.dest('dist'))
         .pipe(rename('all.min.js'))
