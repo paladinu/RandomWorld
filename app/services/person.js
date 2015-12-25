@@ -1,6 +1,7 @@
 'use strict';
 
 var _ = require('lodash');
+var randomService = require('../../app/services/random');
 
 var SETTINGS_DEFAULTS = {
     hair_length: [ {value:'bald', percent: 50}, {value: 'long', percent: 50} ],
@@ -8,13 +9,14 @@ var SETTINGS_DEFAULTS = {
 };
 
 function generateResults(options) {
-    var returnValue;
-    var x = 75;
+    var returnValue = null;
+    var x = randomService.GenerateRandomNumber();
+    console.log(x);
 
     var position = 0;
     _.forEach(options, function (option) {
         position += option.percent;
-        if(position > x) {
+        if(position > x  && returnValue === null) {
             returnValue = option.value;
         }
     });
