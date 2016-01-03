@@ -6,7 +6,8 @@ var randomService = require('../../app/services/random');
 var SETTINGS_DEFAULTS = {
     hair_length: [
         { value: 'short', percent: 25 },
-        { value: 'long', percent: 50 },
+        { value: 'long', percent: 40 },
+        { value: 'braided', percent: 10 },
         { value: 'very short', percent: 15 },
         { value: 'bald', percent: 10 }
     ],
@@ -22,7 +23,6 @@ var SETTINGS_DEFAULTS = {
 function generateResults(options) {
     var returnValue = null;
     var x = randomService.GenerateRandomNumber();
-    console.log(x);
 
     var position = 0;
     _.forEach(options, function (option) {
@@ -31,6 +31,9 @@ function generateResults(options) {
             returnValue = option.value;
         }
     });
+    //We might have generated a number outside of the range of values.  Just punt and pick the first value
+    if(returnValue === null)
+        returnValue = options[0].value;
 
     return returnValue;
 }
@@ -40,8 +43,9 @@ exports.getPerson = function (settingsObj) {
 
     var results = {};
     
-    results["hair_length"] = generateResults(options.hair_length);
-    results["hair_color"] = generateResults(options.hair_color);
-     
+    for(var propertyName in options) {
+        results[propertyName] = generateResults(options[propertyName]);
+    }
+    
     return results;
 };
