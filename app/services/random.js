@@ -1,7 +1,7 @@
 'use strict';
 
 function generateRandomNumber(){
-    return 95;
+    return Math.floor((Math.random() * 100) + 1);
 }
 
 exports.GenerateRandomNumber = function () {
