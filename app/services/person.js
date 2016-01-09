@@ -4,20 +4,30 @@ var _ = require('lodash');
 var randomService = require('../../app/services/random');
 
 var SETTINGS_DEFAULTS = {
-    hair_length: [
+    hair_length: { values: [
         { value: 'short', percent: 25 },
         { value: 'long', percent: 40 },
         { value: 'braided', percent: 10 },
         { value: 'very short', percent: 15 },
         { value: 'bald', percent: 10 }
-    ],
-    hair_color: [
+    ]},
+    sex:{values:[
+        { value: 'male', percent: 50},
+        { value: 'female', percent: 50}                
+    ]},
+    hair_color: {values: [
         { value: 'brown', percent: 25 },
         { value: 'blonde', percent: 25 },
         { value: 'black', percent: 25 },
         { value: 'red', percent: 10 },
         { value: 'light-brown', percent: 10 }, 
-        { value: 'silver', percent: 5 }]
+        { value: 'silver', percent: 5 }]},
+    facial_hair: {
+        dependency: 'sex',
+        dependencyOptions: ['male'],
+        values:[
+        { value: 'beard', percent: 100 }
+    ]}    
 };
 
 function generateResults(options) {
@@ -44,7 +54,7 @@ exports.getPerson = function (settingsObj) {
     var results = {};
     
     for(var propertyName in options) {
-        results[propertyName] = generateResults(options[propertyName]);
+        results[propertyName] = generateResults(options[propertyName].values);
     }
     
     return results;
