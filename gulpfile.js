@@ -9,6 +9,7 @@ var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
 var minifyCss = require('gulp-minify-css');
 var sourcemaps = require('gulp-sourcemaps');
+var addsrc = require('gulp-add-src');
 
 // Lint Task
 gulp.task('lint', function() {
@@ -29,6 +30,8 @@ gulp.task('sass', function() {
             }))
         .pipe(sourcemaps.write())
         .pipe(gulp.dest('public/stylesheets'))
+        .pipe(addsrc('node_modules/bootstrap/dist/css/bootstrap.css'))
+        .pipe(addsrc('node_modules/bootstrap/dist/css/bootstrap-theme.css'))
         .pipe(concat('all.css'))
         .pipe(gulp.dest('dist'))
         .pipe(minifyCss())
