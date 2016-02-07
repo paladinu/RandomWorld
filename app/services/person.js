@@ -27,8 +27,33 @@ var SETTINGS_DEFAULTS = {
         dependencyOptions: ['male'],
         values:[
         { value: 'beard', percent: 100 }
-    ]}    
+    ]} 
 };
+
+function resolveProperties(results, options){
+    var isWorkDone = false;
+    for(var propertyName in options) {
+        var option = options[propertyName];
+        
+        var hasNoDependency = !option.hasOwnProperty('dependency');
+        var hasDependencyWithNoOptions = results.hasOwnProperty(option.dependency) && !option.hasOwnProperty('dependencyOptions');
+        var hasDependency =  results.hasOwnProperty(option.dependency);
+        var hasMatchingOption = _.contains(option.dependencyOptions, results[option.dependency]); 
+        var hasDependencyWithMatchingOption = hasDependency && hasMatchingOption; 
+        if(hasNoDependency || hasDependencyWithNoOptions || hasDependencyWithMatchingOption){
+            isWorkDone = true;
+            results[propertyName] = generateResults(option.values); 
+            delete options[propertyName];   
+        }
+        if(hasDependency && !hasMatchingOption){
+            isWorkDone = true;
+            delete options[propertyName];
+        }
+    }
+    if(isWorkDone){
+        resolveProperties(results, options);
+    }
+}
 
 function generateResults(options) {
     var returnValue = null;
@@ -50,12 +75,11 @@ function generateResults(options) {
 
 exports.getPerson = function (settingsObj) {
     var options = SETTINGS_DEFAULTS;
-
     var results = {};
     
-    for(var propertyName in options) {
-        results[propertyName] = generateResults(options[propertyName].values);
-    }
+    var localOptions = _.extend({}, options);
+    
+    resolveProperties(results, localOptions);
     
     return results;
 };
